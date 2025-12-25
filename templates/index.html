@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Houseplant Health Checker</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4fdf4;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            margin-top: 20px;
+        }
+
+        .box {
+            background: white;
+            padding: 25px;
+            width: 420px;
+            margin: 30px auto;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+        }
+
+        input[type="file"] {
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 25px;
+            background: green;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background: darkgreen;
+        }
+
+        img {
+            width: 250px;
+            margin-top: 15px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .confidence-high {
+            color: green;
+            font-weight: bold;
+        }
+
+        .confidence-medium {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .confidence-low {
+            color: red;
+            font-weight: bold;
+        }
+
+        .care-box {
+            background: #eef9ee;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .note {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🌿 AI Houseplant Health & Maintenance</h1>
+
+    <div class="box">
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="image" required>
+            <br>
+            <button type="submit">Check Plant Health</button>
+        </form>
+
+        {% if prediction is not none %}
+        <div class="result">
+            <h3>🧠 Prediction</h3>
+            <p><b>Disease / Condition:</b> {{ prediction.replace('_', ' ') }}</p>
+
+            {% if confidence >= 80 %}
+                <p class="confidence-high">Confidence: {{ confidence }}%</p>
+            {% elif confidence >= 60 %}
+                <p class="confidence-medium">Confidence: {{ confidence }}%</p>
+            {% else %}
+                <p class="confidence-low">Confidence: {{ confidence }}%</p>
+            {% endif %}
+
+            <div class="care-box">
+                <p><b>🌱 Care Recommendation:</b></p>
+                <p>{{ care }}</p>
+            </div>
+
+            <img src="{{ url_for('static', filename='uploads/' + filename) }}">
+
+            <div class="note">
+                Note: Predictions are based on image analysis and may vary with image quality.
+            </div>
+
+            <br>
+            <form method="GET">
+                <button type="submit">Upload Another Image</button>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
+
+
+
