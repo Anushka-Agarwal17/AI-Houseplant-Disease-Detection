@@ -1,5 +1,8 @@
+.env
 venv/
+.venv/
 __pycache__/
 *.pyc
-plant_health_model.h5
 static/uploads/
+.vscode/
+desktop.ini

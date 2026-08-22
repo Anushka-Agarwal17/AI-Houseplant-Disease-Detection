@@ -1,134 +1,1452 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>AI Plant Doctor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-body {
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(to right, #d4fc79, #96e6a1);
-    margin: 0;
-}
+    <title>AI Plant Doctor</title>
 
-.container {
-    max-width: 600px;
-    margin: 40px auto;
-    background: white;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
+    <style>
+        * {
+            box-sizing: border-box;
+        }
 
-h1 {
-    text-align: center;
-    color: #2e7d32;
-}
+        :root {
+            --green: #238636;
+            --dark-green: #166534;
+            --light-green: #dcfce7;
+            --mint: #f0fdf4;
+            --text: #172018;
+            --muted: #647067;
+            --border: #dce8df;
+            --white: #ffffff;
+        }
 
-.upload-box {
-    text-align: center;
-    margin-bottom: 20px;
-}
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Arial, sans-serif;
+            color: var(--text);
 
-button {
-    background: #2e7d32;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 10px;
-}
+            background:
+                radial-gradient(
+                    circle at 10% 10%,
+                    rgba(134, 239, 172, 0.35),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 90% 20%,
+                    rgba(187, 247, 208, 0.5),
+                    transparent 30%
+                ),
+                linear-gradient(
+                    135deg,
+                    #f7fff8,
+                    #ecfdf3
+                );
 
-button:hover {
-    background: #1b5e20;
-}
+            min-height: 100vh;
+        }
 
-.result {
-    margin-top: 20px;
-}
+        /* =========================
+           NAVBAR
+        ========================= */
 
-.tag {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 6px;
-    font-weight: bold;
-}
+        .navbar {
+            width: 100%;
+            padding: 20px 7%;
 
-.high { background: #c8e6c9; color: green; }
-.medium { background: #fff3cd; color: orange; }
-.low { background: #ffcdd2; color: red; }
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
 
-.ai-text {
-    white-space: pre-line;
-    line-height: 1.6;
-    font-size: 14px;
-}
+            font-size: 21px;
+            font-weight: 800;
 
-img {
-    width: 100%;
-    border-radius: 10px;
-    margin-top: 10px;
-}
-</style>
+            color: var(--dark-green);
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 13px;
+
+            background: var(--light-green);
+
+            font-size: 22px;
+        }
+
+        .nav-pill {
+            padding: 9px 16px;
+
+            border: 1px solid var(--border);
+            border-radius: 30px;
+
+            background: rgba(255, 255, 255, 0.7);
+
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            width: min(1100px, 92%);
+
+            margin: 20px auto 70px;
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+            text-align: center;
+
+            max-width: 760px;
+
+            margin: 30px auto 35px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+
+            align-items: center;
+            gap: 7px;
+
+            padding: 8px 15px;
+
+            background: var(--light-green);
+
+            border: 1px solid #bbf7d0;
+
+            color: var(--dark-green);
+
+            border-radius: 30px;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .hero h1 {
+            font-size: clamp(38px, 6vw, 64px);
+
+            line-height: 1.05;
+
+            margin: 20px 0 15px;
+
+            letter-spacing: -2px;
+        }
+
+        .hero h1 span {
+            color: var(--green);
+        }
+
+        .hero p {
+            margin: auto;
+
+            max-width: 650px;
+
+            color: var(--muted);
+
+            font-size: 17px;
+
+            line-height: 1.7;
+        }
+
+        /* =========================
+           APP CARD
+        ========================= */
+
+        .app-card {
+            background: rgba(255, 255, 255, 0.92);
+
+            border: 1px solid var(--border);
+
+            border-radius: 28px;
+
+            padding: 30px;
+
+            box-shadow:
+                0 25px 70px rgba(35, 80, 45, 0.12);
+
+            backdrop-filter: blur(15px);
+        }
+
+        /* =========================
+           UPLOAD AREA
+        ========================= */
+
+        .upload-area {
+            display: block;
+
+            border: 2px dashed #b7d9bf;
+
+            border-radius: 22px;
+
+            padding: 48px 25px;
+
+            text-align: center;
+
+            cursor: pointer;
+
+            transition: 0.25s ease;
+
+            background: var(--mint);
+        }
+
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: var(--green);
+
+            background: #eaffef;
+
+            transform: translateY(-2px);
+        }
+
+        .upload-icon {
+            width: 70px;
+            height: 70px;
+
+            margin: 0 auto 18px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 20px;
+
+            background: white;
+
+            box-shadow:
+                0 10px 25px rgba(35, 80, 45, 0.1);
+
+            font-size: 32px;
+        }
+
+        .upload-area h3 {
+            margin: 0 0 8px;
+
+            font-size: 20px;
+        }
+
+        .upload-area p {
+            margin: 0;
+
+            color: var(--muted);
+
+            font-size: 14px;
+        }
+
+        .browse {
+            color: var(--green);
+
+            font-weight: 700;
+        }
+
+        #imageInput {
+            display: none;
+        }
+
+        /* =========================
+           IMAGE PREVIEW
+        ========================= */
+
+        .preview-section {
+            display: none;
+
+            margin-top: 25px;
+        }
+
+        .preview-section.active {
+            display: block;
+
+            animation: fadeUp 0.4s ease;
+        }
+
+        .preview-wrapper {
+            display: grid;
+
+            grid-template-columns: 180px 1fr;
+
+            gap: 22px;
+
+            align-items: center;
+
+            padding: 15px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 18px;
+
+            background: #fbfffc;
+        }
+
+        .preview-image {
+            width: 180px;
+            height: 150px;
+
+            object-fit: cover;
+
+            border-radius: 14px;
+        }
+
+        .file-info strong {
+            display: block;
+
+            margin-bottom: 7px;
+
+            word-break: break-word;
+        }
+
+        .file-info span {
+            color: var(--muted);
+
+            font-size: 13px;
+        }
+
+        /* =========================
+           ANALYZE BUTTON
+        ========================= */
+
+        .analyze-btn {
+            width: 100%;
+
+            margin-top: 20px;
+
+            padding: 16px;
+
+            border: none;
+
+            border-radius: 15px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #238636,
+                    #166534
+                );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.25s ease;
+
+            box-shadow:
+                0 10px 25px rgba(35, 134, 54, 0.25);
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 15px 30px rgba(35, 134, 54, 0.3);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.7;
+
+            cursor: wait;
+
+            transform: none;
+        }
+
+        /* =========================
+           LOADING
+        ========================= */
+
+        .loading {
+            display: none;
+
+            margin-top: 20px;
+
+            text-align: center;
+
+            padding: 20px;
+
+            border-radius: 15px;
+
+            background: #f0fdf4;
+
+            color: var(--dark-green);
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            width: 28px;
+            height: 28px;
+
+            margin: 0 auto 10px;
+
+            border: 3px solid #ccebd3;
+
+            border-top-color: var(--green);
+
+            border-radius: 50%;
+
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* =========================
+           RESULT
+        ========================= */
+
+        .result {
+            margin-top: 35px;
+
+            padding-top: 35px;
+
+            border-top: 1px solid var(--border);
+
+            animation: fadeUp 0.5s ease;
+        }
+
+        .result-heading {
+            margin-bottom: 22px;
+        }
+
+        .result-heading small {
+            color: var(--green);
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: 1px;
+        }
+
+        .result-heading h2 {
+            margin: 5px 0;
+
+            font-size: 30px;
+        }
+
+        .result-grid {
+            display: grid;
+
+            grid-template-columns: 330px 1fr;
+
+            gap: 25px;
+        }
+
+        /* =========================
+           PLANT IMAGE
+        ========================= */
+
+        .plant-image-card {
+            padding: 12px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 20px;
+
+            background: white;
+        }
+
+        .plant-image-card img {
+            width: 100%;
+
+            height: 300px;
+
+            object-fit: cover;
+
+            border-radius: 14px;
+        }
+
+        /* =========================
+           DIAGNOSIS
+        ========================= */
+
+        .diagnosis-card {
+            padding: 25px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 20px;
+
+            background: white;
+        }
+
+        .diagnosis-label {
+            color: var(--muted);
+
+            font-size: 13px;
+
+            margin-bottom: 5px;
+        }
+
+        .disease-name {
+            font-size: 27px;
+
+            font-weight: 800;
+
+            margin-bottom: 20px;
+
+            color: var(--dark-green);
+
+            text-transform: capitalize;
+        }
+
+        /* =========================
+           STATS
+        ========================= */
+
+        .stats {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 12px;
+
+            margin-bottom: 22px;
+        }
+
+        .stat {
+            padding: 15px;
+
+            background: var(--mint);
+
+            border-radius: 14px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+
+            font-size: 12px;
+
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-weight: 800;
+
+            font-size: 17px;
+        }
+
+        /* =========================
+           CONFIDENCE BAR
+        ========================= */
+
+        .confidence-bar {
+            height: 9px;
+
+            background: #e7eee9;
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            margin-top: 8px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #65a30d,
+                    #16a34a
+                );
+
+            border-radius: 20px;
+
+            width: 0%;
+
+            transition: width 1s ease;
+        }
+
+        /* =========================
+           SEVERITY
+        ========================= */
+
+        .severity {
+            display: inline-block;
+
+            padding: 7px 13px;
+
+            border-radius: 30px;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            background: #fef3c7;
+
+            color: #92400e;
+        }
+
+        /* =========================
+           AI ADVICE
+        ========================= */
+
+        .ai-box {
+            margin-top: 25px;
+
+            padding: 25px;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #f0fdf4,
+                    #ecfdf5
+                );
+
+            border: 1px solid #ccebd3;
+        }
+
+        .ai-title {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            font-weight: 800;
+
+            font-size: 18px;
+
+            margin-bottom: 15px;
+        }
+
+        .ai-icon {
+            width: 38px;
+            height: 38px;
+
+            display: grid;
+            place-items: center;
+
+            background: white;
+
+            border-radius: 12px;
+        }
+
+        .ai-text {
+            white-space: pre-line;
+
+            line-height: 1.8;
+
+            color: #3d4a40;
+
+            font-size: 14px;
+        }
+
+        /* =========================
+           AGAIN BUTTON
+        ========================= */
+
+        .again-btn {
+            margin-top: 20px;
+
+            padding: 12px 20px;
+
+            border: 1px solid var(--green);
+
+            border-radius: 12px;
+
+            background: white;
+
+            color: var(--green);
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.2s ease;
+        }
+
+        .again-btn:hover {
+            background: var(--mint);
+
+            transform: translateY(-1px);
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            text-align: center;
+
+            color: var(--muted);
+
+            font-size: 13px;
+
+            padding: 30px;
+        }
+
+        /* =========================
+           ANIMATIONS
+        ========================= */
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+
+                transform:
+                    translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+
+                transform:
+                    translateY(0);
+            }
+        }
+
+        /* =========================
+           MOBILE
+        ========================= */
+
+        @media (max-width: 750px) {
+
+            .navbar {
+                padding: 16px 5%;
+            }
+
+            .nav-pill {
+                display: none;
+            }
+
+            .main {
+                width: 94%;
+            }
+
+            .app-card {
+                padding: 18px;
+
+                border-radius: 20px;
+            }
+
+            .hero h1 {
+                font-size: 42px;
+            }
+
+            .hero p {
+                font-size: 15px;
+            }
+
+            .result-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .preview-image {
+                width: 100%;
+
+                height: 220px;
+            }
+
+            .plant-image-card img {
+                height: 250px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
+
 
 <body>
 
-<div class="container">
+    <!-- =========================
+         NAVBAR
+    ========================== -->
 
-<h1>🌿 AI Plant Doctor</h1>
+    <nav class="navbar">
 
-<div class="upload-box">
-    <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="image" required>
-        <br>
-        <button type="submit">Analyze Plant</button>
-    </form>
-</div>
+        <div class="brand">
 
-{% if result %}
-<div class="result">
+            <div class="brand-icon">
+                🌿
+            </div>
 
-    <h3>🧠 Diagnosis</h3>
+            PlantDoctor AI
 
-    <p><b>Disease:</b> {{ result.disease.replace('_',' ') }}</p>
-
-    {% if result.confidence >= 0.80 %}
-        <span class="tag high">High Confidence</span>
-    {% elif result.confidence >= 0.60 %}
-        <span class="tag medium">Medium Confidence</span>
-    {% else %}
-        <span class="tag low">Low Confidence</span>
-    {% endif %}
-
-    <p><b>Confidence:</b> {{ (result.confidence * 100) | round(2) }}%</p>
-    <p><b>Severity:</b> {{ result.severity }}</p>
-
-    <div class="ai-box">
-        <b>🤖 AI Recommendation:</b>
-        <div class="ai-text">
-            {{ result.treatment | safe }}
         </div>
-    </div>
-    <!-- <div class="ai-box">
-        <b>🤖 AI Recommendation:</b>
-        <div style="white-space: pre-line;">
-            {{ result.treatment }}
+
+        <div class="nav-pill">
+            AI-powered plant health analysis
         </div>
-    </div> -->
 
-    {% if filename %}
-    <img src="{{ url_for('static', filename='uploads/' + filename) }}">
-    {% endif %}
+    </nav>
 
-</div>
-{% endif %}
 
-</div>
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="main">
+
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <div class="eyebrow">
+                ✨ Intelligent Plant Health Assistant
+            </div>
+
+            <h1>
+                Give your plant a
+                <span>health check.</span>
+            </h1>
+
+            <p>
+                Upload a photo of your plant leaf and let our AI analyze
+                its health, identify potential diseases, and provide
+                personalized treatment and prevention guidance.
+            </p>
+
+        </section>
+
+
+        <!-- =========================
+             APPLICATION CARD
+        ========================== -->
+
+        <section class="app-card">
+
+
+            <!-- UPLOAD FORM -->
+
+            <form
+                method="POST"
+                enctype="multipart/form-data"
+                id="plantForm"
+            >
+
+                <!-- DRAG & DROP -->
+
+                <label
+                    class="upload-area"
+                    id="dropArea"
+                >
+
+                    <div class="upload-icon">
+                        🌱
+                    </div>
+
+                    <h3>
+                        Upload a plant image
+                    </h3>
+
+                    <p>
+                        Drag & drop your image here or
+                        <span class="browse">
+                            browse files
+                        </span>
+                    </p>
+
+                    <p style="margin-top: 8px;">
+                        JPG, JPEG or PNG
+                    </p>
+
+                    <input
+                        type="file"
+                        name="image"
+                        id="imageInput"
+                        accept="image/png,image/jpeg,image/jpg"
+                        required
+                    >
+
+                </label>
+
+
+                <!-- IMAGE PREVIEW -->
+
+                <div
+                    class="preview-section"
+                    id="previewSection"
+                >
+
+                    <div class="preview-wrapper">
+
+                        <img
+                            id="previewImage"
+                            class="preview-image"
+                            alt="Selected plant image"
+                        >
+
+                        <div class="file-info">
+
+                            <strong id="fileName">
+                                Selected image
+                            </strong>
+
+                            <span id="fileSize">
+                                Image ready for analysis
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ANALYZE BUTTON -->
+
+                <button
+                    type="submit"
+                    class="analyze-btn"
+                    id="analyzeButton"
+                >
+                    🔍 Analyze Plant
+                </button>
+
+
+                <!-- LOADING -->
+
+                <div
+                    class="loading"
+                    id="loading"
+                >
+
+                    <div class="spinner"></div>
+
+                    <strong>
+                        Analyzing your plant...
+                    </strong>
+
+                    <div
+                        style="
+                            font-size: 13px;
+                            margin-top: 5px;
+                        "
+                    >
+                        Our AI is examining the image and
+                        preparing recommendations.
+                    </div>
+
+                </div>
+
+            </form>
+
+
+            <!-- =========================
+                 RESULT
+
+                 IMPORTANT:
+                 Everything using result.*
+                 is INSIDE this condition.
+            ========================== -->
+
+            {% if result %}
+
+            <section
+                class="result"
+                id="result"
+            >
+
+                <div class="result-heading">
+
+                    <small>
+                        Analysis complete
+                    </small>
+
+                    <h2>
+                        🌿 Plant Health Report
+                    </h2>
+
+                </div>
+
+
+                <div class="result-grid">
+
+
+                    <!-- PLANT IMAGE -->
+
+                    <div class="plant-image-card">
+
+                        {% if filename %}
+
+                        <img
+                            src="{{ url_for(
+                                'static',
+                                filename='uploads/' + filename
+                            ) }}"
+                            alt="Analyzed plant"
+                        >
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- DIAGNOSIS -->
+
+                    <div class="diagnosis-card">
+
+                        <div class="diagnosis-label">
+                            Detected condition
+                        </div>
+
+                        <div class="disease-name">
+                            {{ result.disease.replace('_', ' ') }}
+                        </div>
+
+
+                        <!-- STATS -->
+
+                        <div class="stats">
+
+
+                            <!-- CONFIDENCE -->
+
+                            <div class="stat">
+
+                                <div class="stat-label">
+                                    Confidence
+                                </div>
+
+                                <div class="stat-value">
+                                    {{ (result.confidence * 100) | round(2) }}%
+                                </div>
+
+                                <div class="confidence-bar">
+
+                                    <div
+                                        class="confidence-fill"
+                                        style="
+                                            width: {{ (result.confidence * 100) | round(0) }}%;
+                                        "
+                                    ></div>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- SEVERITY -->
+
+                            <div class="stat">
+
+                                <div class="stat-label">
+                                    Severity
+                                </div>
+
+                                <div class="stat-value">
+
+                                    <span class="severity">
+                                        {{ result.severity }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- AI RECOMMENDATION -->
+
+                        <div class="ai-box">
+
+                            <div class="ai-title">
+
+                                <div class="ai-icon">
+                                    🤖
+                                </div>
+
+                                AI Plant Doctor
+
+                            </div>
+
+                            <div class="ai-text">
+                                {{ result.treatment | safe }}
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ANALYZE AGAIN -->
+
+                <button
+                    type="button"
+                    class="again-btn"
+                    onclick="resetAnalysis()"
+                >
+                    ↻ Analyze another plant
+                </button>
+
+            </section>
+
+            {% endif %}
+
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+
+    <footer>
+        🌱 AI Plant Doctor · Deep Learning + Generative AI
+    </footer>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script>
+
+        const input =
+            document.getElementById("imageInput");
+
+        const dropArea =
+            document.getElementById("dropArea");
+
+        const previewSection =
+            document.getElementById("previewSection");
+
+        const previewImage =
+            document.getElementById("previewImage");
+
+        const fileName =
+            document.getElementById("fileName");
+
+        const fileSize =
+            document.getElementById("fileSize");
+
+        const form =
+            document.getElementById("plantForm");
+
+        const loading =
+            document.getElementById("loading");
+
+        const analyzeButton =
+            document.getElementById("analyzeButton");
+
+
+        /* =========================
+           FILE SELECTION
+        ========================== */
+
+        input.addEventListener(
+            "change",
+            function () {
+
+                if (
+                    this.files &&
+                    this.files[0]
+                ) {
+
+                    showPreview(
+                        this.files[0]
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =========================
+           DRAG ENTER / OVER
+        ========================== */
+
+        [
+            "dragenter",
+            "dragover"
+        ].forEach(
+            eventName => {
+
+                dropArea.addEventListener(
+                    eventName,
+                    function (event) {
+
+                        event.preventDefault();
+
+                        event.stopPropagation();
+
+                        dropArea.classList.add(
+                            "dragover"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* =========================
+           DRAG LEAVE / DROP
+        ========================== */
+
+        [
+            "dragleave",
+            "drop"
+        ].forEach(
+            eventName => {
+
+                dropArea.addEventListener(
+                    eventName,
+                    function (event) {
+
+                        event.preventDefault();
+
+                        event.stopPropagation();
+
+                        dropArea.classList.remove(
+                            "dragover"
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+        /* =========================
+           DROP FILE
+        ========================== */
+
+        dropArea.addEventListener(
+            "drop",
+            function (event) {
+
+                const files =
+                    event.dataTransfer.files;
+
+                if (files.length > 0) {
+
+                    input.files = files;
+
+                    showPreview(files[0]);
+
+                }
+
+            }
+        );
+
+
+        /* =========================
+           SHOW PREVIEW
+        ========================== */
+
+        function showPreview(file) {
+
+            if (
+                !file.type.startsWith("image/")
+            ) {
+
+                alert(
+                    "Please select a JPG, JPEG or PNG image."
+                );
+
+                input.value = "";
+
+                return;
+
+            }
+
+
+            const reader =
+                new FileReader();
+
+
+            reader.onload =
+                function (event) {
+
+                    previewImage.src =
+                        event.target.result;
+
+                    previewSection.classList.add(
+                        "active"
+                    );
+
+                };
+
+
+            reader.readAsDataURL(file);
+
+
+            fileName.textContent =
+                file.name;
+
+
+            fileSize.textContent =
+                formatFileSize(file.size) +
+                " · Ready for analysis";
+
+        }
+
+
+        /* =========================
+           FILE SIZE
+        ========================== */
+
+        function formatFileSize(bytes) {
+
+            if (bytes < 1024) {
+
+                return bytes + " B";
+
+            }
+
+
+            if (
+                bytes <
+                1024 * 1024
+            ) {
+
+                return (
+                    bytes / 1024
+                ).toFixed(1) + " KB";
+
+            }
+
+
+            return (
+                bytes /
+                (1024 * 1024)
+            ).toFixed(1) + " MB";
+
+        }
+
+
+        /* =========================
+           FORM SUBMIT
+        ========================== */
+
+        form.addEventListener(
+            "submit",
+            function () {
+
+                if (
+                    !input.files.length
+                ) {
+
+                    return;
+
+                }
+
+
+                analyzeButton.disabled =
+                    true;
+
+
+                analyzeButton.textContent =
+                    "Analyzing...";
+
+
+                loading.classList.add(
+                    "active"
+                );
+
+            }
+        );
+
+
+        /* =========================
+           RESET
+        ========================== */
+
+        function resetAnalysis() {
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+
+            setTimeout(
+                function () {
+
+                    window.location.href =
+                        window.location.pathname;
+
+                },
+                300
+            );
+
+        }
+
+
+        /* =========================
+           SCROLL TO RESULT
+        ========================== */
+
+        {% if result %}
+
+        window.addEventListener(
+            "load",
+            function () {
+
+                const result =
+                    document.getElementById(
+                        "result"
+                    );
+
+
+                if (result) {
+
+                    setTimeout(
+                        function () {
+
+                            result.scrollIntoView({
+                                behavior: "smooth",
+                                block: "start"
+                            });
+
+                        },
+                        300
+                    );
+
+                }
+
+            }
+        );
+
+        {% endif %}
+
+    </script>
 
 </body>
+
 </html>
 
 <!-- <!DOCTYPE html>

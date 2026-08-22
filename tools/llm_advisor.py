@@ -1,7 +1,10 @@
+import os
+from dotenv import load_dotenv
 from google import genai
 
-client = genai.Client(api_key="AIzaSyAsKuuZQ8L9FPFSPlC4PWpFA1a3kRCkepA")
+load_dotenv()
 
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 def generate_advice(disease, severity):
     prompt = f"""
     A plant has {disease} with {severity} severity.
@@ -15,7 +18,7 @@ def generate_advice(disease, severity):
     """
 
     response = client.models.generate_content(
-        model="gemini-2.5-flash",
+        model="gemini-3.6-flash",
         contents=prompt
     )
     
